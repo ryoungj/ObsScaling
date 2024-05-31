@@ -103,12 +103,15 @@ We provide notebooks to reproduce our major results in the paper, including:
 - [Post-training scaling analysis (Sec 4.2)](./base_llm_post_training.ipynb) <a href="https://colab.research.google.com/github/ryoungj/ObsScaling/blob/main/base_llm_post_training.ipynb">
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
 </a>
+
 - [Emergent capability analysis (Sec 4.1)](./base_llm_emergent_capability.ipynb) <a href="https://colab.research.google.com/github/ryoungj/ObsScaling/blob/main/base_llm_emergent_capability.ipynb">
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
 </a>
+
 - [Agentic capability analysis (Sec 4.3)](./instruct_llm_agent_capability.ipynb) <a href="https://colab.research.google.com/github/ryoungj/ObsScaling/blob/main/instruct_llm_agent_capability.ipynb">
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
 </a>
+
 - [PC analysis of standard benchmarks (Sec 3.2 & 3.3)](./base_llm_eval_pca_scaling.ipynb) <a href="https://colab.research.google.com/github/ryoungj/ObsScaling/blob/main/base_llm_eval_pca_scaling.ipynb">
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
 </a>
