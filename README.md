@@ -1,12 +1,20 @@
 # Observational Scaling Laws
 
 
-This repo contains the code for the paper [Observational Scaling Laws and the Predictability of Language Model Performance](https://arxiv.org/abs/2405.10938).
+<!-- <div align="center" style="font-size: 28px;">
+    [<a href="https://arxiv.org/abs/2405.10938">📃 Paper</a>] &nbsp;&nbsp;&nbsp;
+    [<a href="https://x.com/YangjunR/status/1793681226349563954">🐦 Twitter</a>]
+</div>
 
+<br> -->
+
+This repo contains the code for the paper [Observational Scaling Laws and the Predictability of Language Model Performance](https://arxiv.org/abs/2405.10938).
 
 <div align="center">
   <img src="assets/main.jpg" width="90%">
 </div>
+
+<br>
 
 Observational scaling laws generalize scaling laws by identifying a low-dimensional capability measure extracted from standard LLM benchmarks (e.g., [Open LLM Leaderboard](https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard)) as a surrogate "scale" measure to analyze the scaling of complex LM downstream phenomena (e.g., agentic or "emergent" capabilities). 
 The low-dimensional capability measure serves as a shared axis for comparing model families trained with different recipes (e.g., Llama-2, Phi, StarCoder, etc) and log-linearly correlates with compute measures (e.g., training FLOPs) within each model family, allowing us to utilize hundreds of public LMs for a training-free, high-resolution, and broad-coverage scaling analysis.
@@ -18,7 +26,7 @@ We release:
 
 ## Guidelines
 
-Setup
+### Setup
   
 Install the environment:
 ```bash
@@ -97,6 +105,35 @@ _ = plot_scaling_predictions(
 </details>
 
 
+### Selecting Model Subsets for Efficient Scaling Analyses
+
+<a href="https://colab.research.google.com/github/ryoungj/ObsScaling/blob/main/model_subset_selection_guide.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
+
+We provide [a simple guideline and minimal examples](./model_subset_selection_guide.ipynb) of selecting representative model subsets from available public models for low-cost scaling analyses (Sec 5 of the paper).
+
+
+### Collecting Additional Benchmark Results
+We collect LLM evaluation metrics from standardized benchmarks or with unified evaluation protocols. 
+If you would like to add additional LLMs for your analyzes, we suggest following our procedures as described below:
+<details>
+  <summary>Show instructions</summary>
+
+- For standard benchmarks including MMLU, ARC-C, HellaSwag, Winograd, and TruthfulQA, we collect them from the [Open LLM leaderboard](https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard) with the following command:
+```bash
+huggingface-cli download open-llm-leaderboard/results --repo-type dataset --local-dir-use-symlinks True --local-dir leaderboard_data/open-llm-leaderboard --cache-dir <CACHE_DIR>/open-llm-leaderboard
+```
+
+- For those models without exisiting evaluation results on the Open LLM leaderboard, we follow their evaluation protocals and use the [Eleuther AI Harness @b281b0921](https://github.com/EleutherAI/lm-evaluation-harness/tree/b281b0921b636bc36ad05c0b0b0763bd6dd43463) to evaluate them.
+
+- For coding benchmarks (HumanEval), we use the [EvalPlus @477eab399](https://github.com/evalplus/evalplus/tree/477eab399c1bd63cedd7eedad06c627961d48aef) repo for a unified evaluation.
+
+- For other benchmarks like XWinograd, we use the [Eleuther AI Harness @f78e2da45](https://github.com/EleutherAI/lm-evaluation-harness/tree/f78e2da45f034a23b1b13cde3235105b0f55d830) for a unified evaluation. 
+</details>
+
+Feel free to make a pull request to contribute your collected data to our repo for future research!
+
 
 ## Reproducing the Results
 We provide notebooks to reproduce our major results in the paper, including:
@@ -116,12 +153,11 @@ We provide notebooks to reproduce our major results in the paper, including:
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
 </a>
 
-We provide all our collected data in [eval_results](./eval_results).
+- [Model subset selection (Sec 5)](./model_subset_selection_eval.ipynb) <a href="https://colab.research.google.com/github/ryoungj/ObsScaling/blob/main/model_subset_selection_eval.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
 
-## More to Come!
-We will soon release:
-- Code and guidelines for model subset selection
-- Guidelines for collecting additional evaluation results
+We provide all our collected data in [eval_results](./eval_results).
 
 
 ## Citation
