@@ -227,8 +227,8 @@ def apply_funcs(df, metric_name, func_family=None, metric_range=None, eps=1e-9):
         
         for func in funcs:  # apply functions in order
             if func == "log":
-                processed_metric_name = f"Log({processed_metric_name})"
-                procssed_label = f"Log({procssed_label})"
+                processed_metric_name = f"Log$_{{10}}$({processed_metric_name})"
+                procssed_label = f"Log$_{{10}}$({procssed_label})"
                 processed_metric_df = np.log(processed_metric_df + eps)
             elif func == "logit":
                 processed_metric_name = f"Logit({processed_metric_name})"
@@ -472,18 +472,19 @@ def fit_multivariate_regression_model(
         # initialize the parameters
         x_dim = X_train.shape[1]
         p0 = reg_kwargs.get("init_guess", None)
+        init_val = 3e-2
         if p0 is not None:
             p0 = np.array(p0)
             bounds = None
         elif add_nonlinear_params:
             if sigmoid_param_fix_height: 
-                p0 = np.concatenate([[0.0], np.ones(x_dim-1) * 1e-2, [0.0]])
+                p0 = np.concatenate([[0.0], np.ones(x_dim-1) * init_val, [0.0]])
                 bounds = [[-np.inf, np.inf]] * x_dim + [[0., sigmoid_param_range_width]]
             else:
-                p0 = np.concatenate([[0.0], np.ones(x_dim-1) * 1e-2, [1.0, 0.0]])
+                p0 = np.concatenate([[0.0], np.ones(x_dim-1) * init_val, [1.0, 0.0]])
                 bounds = [[-np.inf, np.inf]] * x_dim + [[0., sigmoid_param_range_width], [1 - 2 * sigmoid_param_range_width, 1.]]
         else:
-            p0 = np.concatenate([[0.0], np.ones(x_dim-1) * 1e-2])
+            p0 = np.concatenate([[0.0], np.ones(x_dim-1) * init_val])
             bounds = None
 
         # fit nonlinear regression

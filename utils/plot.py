@@ -210,14 +210,14 @@ def plot_scaling_predictions(
         ref_model_family_df = all_df[all_df["Model Family"] == ref_model_family]
         ref_linear_transformed_x = linear_transform_x_func(ref_model_family_df[processed_x_metric_names].values)
         ref_model_scale = ref_model_family_df[scale_measure_key].values
-        ref_log_model_scale = np.log(ref_model_scale)
+        ref_log_model_scale = np.log10(ref_model_scale)
 
         # fit a linear regression model to transform the x metrics to equivalent model scales, i.e., C = w * log(S) + b
         equiv_scale_model = sm.OLS(ref_linear_transformed_x, sm.add_constant(ref_log_model_scale)).fit()
         equiv_scale_w, equiv_scale_b = equiv_scale_model.params[1], equiv_scale_model.params[0]
 
         # equiv model scale transform func
-        equiv_scale_name = f"Log({ref_model_family}-Equiv. FLOPs (1E21))"
+        equiv_scale_name = f"Log$_{{10}}$({ref_model_family}-Equiv. FLOPs (1E21))"
         equiv_scale_transform_func = lambda x: (x - equiv_scale_b) / equiv_scale_w  # log(S) = (C - b) / w
         equiv_scale_transform_func_form = f"{equiv_scale_name} = (C - {equiv_scale_b:.2f}) / {equiv_scale_w:.2f}"
         inv_equiv_scale_transform_func = lambda x: equiv_scale_w * x + equiv_scale_b  # C = w * log(S) + b
@@ -1004,10 +1004,10 @@ def plot_linear_regression_helper(
         display_reg_metrics = ["r2"]
 
     if log_y_metric:
-        _data[y_metric_name] = np.log(_data[y_metric_name] + log_epsilon)
+        _data[y_metric_name] = np.log10(_data[y_metric_name] + log_epsilon)
 
     if log_x_metric:
-        _data[x_metric_name] = np.log(_data[x_metric_name] + log_epsilon)
+        _data[x_metric_name] = np.log10(_data[x_metric_name] + log_epsilon)
 
     # Set color
     color_palette = sns.color_palette()
@@ -1018,7 +1018,7 @@ def plot_linear_regression_helper(
 
     # Adjust the regression line
     x_range = (_data[x_metric_name].min(), _data[x_metric_name].max())
-    grace_range = 0.05 * (x_range[1] - x_range[0])
+    grace_range = 0.07 * (x_range[1] - x_range[0])
     x_range = (x_range[0] - grace_range, x_range[1] + grace_range)
     model = plot_linear_regression(ax, _data[x_metric_name], _data[y_metric_name], 
                                     x_range, 
@@ -1028,7 +1028,7 @@ def plot_linear_regression_helper(
     # Plot a horizontal line for the random y_metric value
     if random_y_metric_value is not None:
         if log_y_metric:
-            _random_y_metric_value = np.log(random_y_metric_value + log_epsilon)
+            _random_y_metric_value = np.log10(random_y_metric_value + log_epsilon)
         else:
             _random_y_metric_value = random_y_metric_value
         
@@ -1070,10 +1070,10 @@ def plot_linear_regression_helper(
     annot_text(ax, func_form_text)
 
     if log_y_metric:
-        ax.set_ylabel(f"Log - {y_metric_name}")
+        ax.set_ylabel(f"Log$_{{10}}$({y_metric_name})")
     
     if log_x_metric:
-        ax.set_xlabel(f"Log - {x_metric_name}")
+        ax.set_xlabel(f"Log$_{{10}}$({x_metric_name})")
 
     if ylim is not None:
         plt.ylim(ylim)
@@ -1135,14 +1135,14 @@ def plot_linear_correlation(
         fig = plt.figure(figsize=(8, 6))
 
         if log_x_metric:
-            _x_metric_name = f"Log - {x_metric_name}"
-            plot_df[_x_metric_name] = np.log(plot_df[x_metric_name] + 1e-9)
+            _x_metric_name = f"Log$_{{10}}$({x_metric_name})"
+            plot_df[_x_metric_name] = np.log10(plot_df[x_metric_name] + 1e-9)
         else:
             _x_metric_name = x_metric_name
 
         if log_y_metric:
-            _y_metric_name = f"Log - {y_metric_name}"
-            plot_df[_y_metric_name] = np.log(plot_df[y_metric_name] + 1e-9)
+            _y_metric_name = f"Log$_{{10}}$({y_metric_name})"
+            plot_df[_y_metric_name] = np.log10(plot_df[y_metric_name] + 1e-9)
         else:
             _y_metric_name = y_metric_name
         
@@ -1238,7 +1238,7 @@ def plot_linear_correlation(
             
         if random_y_metric_value is not None:
             if log_y_metric:
-                _random_y_metric_value = np.log(random_y_metric_value + 1e-9)
+                _random_y_metric_value = np.log10(random_y_metric_value + 1e-9)
             else:
                 _random_y_metric_value = random_y_metric_value
             ax.axhline(_random_y_metric_value, color='red', linestyle='--')
