@@ -20,9 +20,15 @@ Observational scaling laws generalize scaling laws by identifying a low-dimensio
 The low-dimensional capability measure serves as a shared axis for comparing model families trained with different recipes (e.g., Llama-2, Phi, StarCoder, etc) and log-linearly correlates with compute measures (e.g., training FLOPs) within each model family, allowing us to utilize hundreds of public LMs for a training-free, high-resolution, and broad-coverage scaling analysis.
 
 We release:
-- Collected metadata and evaluation results for nearly 100 public pretrained models and instruction-tuned models
+- Collected metadata and evaluation results for nearly 150 public pretrained models and instruction-tuned models
 - Code for fitting observational scaling laws for scaling analyses
 - Code and guidelines for selecting representative model subsets for low-cost scaling analyses
+
+**Updates**
+- [2024/10/01] 
+  - Updaed pre-registered prediction results on newly released models
+  - Added [unified benchmarking results on a new set of models](./eval_results/base_llm_benchmark_eval.csv)
+  - Added [unified benchmarking results of sub-10B models](./eval_results/base_llm_benchmark_eval_sub_10b.csv) for cheap scaling analyses
 
 ## Guidelines
 
@@ -114,8 +120,13 @@ _ = plot_scaling_predictions(
 We provide [a simple guideline and minimal examples](./model_subset_selection_guide.ipynb) of selecting representative model subsets from available public models for low-cost scaling analyses (Sec 5 of the paper).
 
 
+### Collected Benchmark Results
+We have collected LLM evaluation metrics from standardized benchmarks or with unified evaluation protocols included in [`eval_results/`](./eval_results). 
+In particular, we included the base LLM benchmark results in [`base_llm_benchmark_eval.csv`](./eval_results/base_llm_benchmark_eval.csv), which can be used for your scaling analyses.
+We have also filtered a set of sub-10B models that can run on a single A100 GPU for cheap scaling analyzes at smaller scales, the results are included in [`base_llm_benchmark_eval_sub_10b.csv`](./eval_results/base_llm_benchmark_eval_sub_10b.csv).
+
+
 ### Collecting Additional Benchmark Results
-We collect LLM evaluation metrics from standardized benchmarks or with unified evaluation protocols. 
 If you would like to add additional LLMs for your analyzes, we suggest following our procedures as described below:
 <details>
   <summary>Show instructions</summary>
@@ -154,6 +165,10 @@ We provide notebooks to reproduce our major results in the paper, including:
 </a>
 
 - [Model subset selection (Sec 5)](./model_subset_selection_eval.ipynb) <a href="https://colab.research.google.com/github/ryoungj/ObsScaling/blob/main/model_subset_selection_eval.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
+
+- [Leaderboard v2 prediction (Appx C.3)](./base_llm_leaderboard_v2.ipynb) <a href="https://colab.research.google.com/github/ryoungj/ObsScaling/blob/main/base_llm_leaderboard_v2.ipynb">
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
 </a>
 

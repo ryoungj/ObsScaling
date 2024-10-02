@@ -55,6 +55,9 @@ def plot_scaling_predictions(
     test_limit=None,
     cutoff_threshold=None,
     heldout_filter=None,
+    add_heldout_to_test=False,
+    highlight_filter=None,
+    highlight_marker_name=None,
     scale_measure_key="FLOPs (1E21)",
     transform_x_to_equiv_scale=True,
     ref_model_family="Llama-2",
@@ -106,6 +109,9 @@ def plot_scaling_predictions(
         test_limit: float, the limit for the test set, if >= 1, it's the number of samples, if < 1, it's the fraction of the data (0.0-1.0).
         cutoff_threshold: float, the threshold for the cutoff method, if None, the cutoff method is not used.
         heldout_filter: callable, a function to filter the data that should always be held out and not used for training or testing.
+        add_heldout_to_test: bool, whether to add the heldout data to the test set.
+        highlight_filter: callable, a function to filter the data (in the test set) to highlight.
+        highlight_marker_name: str, the name of the marker for the highlighted data.
         scale_measure_key: str, the key for the compute scale measure.
         transform_x_to_equiv_scale: bool, whether to transform the aggregated x metrics to equivalent model scales for plotting.
         ref_model_family: str, the reference model family to use for transforming the x metrics to equivalent model scales.
@@ -158,6 +164,8 @@ def plot_scaling_predictions(
     # Holdout part of the training data, used when we select only a subset of the models for fitting scaling laws
     if heldout_filter is not None:
         train_df, heldout_df = heldout_data_by_filter(train_df, heldout_filter)
+        if add_heldout_to_test:
+            test_df = pd.concat([test_df, heldout_df])
     else:
         heldout_df = None
 
@@ -299,6 +307,7 @@ def plot_scaling_predictions(
 
         train_style_kwargs = copy.deepcopy(style_kwargs)
         test_style_kwargs = copy.deepcopy(style_kwargs)
+        highlight_style_kwargs = copy.deepcopy(style_kwargs)
 
         if stylize_by_hue:
             train_style_kwargs.update(
@@ -306,6 +315,9 @@ def plot_scaling_predictions(
             )
             test_style_kwargs.update(
                 {"marker": "X"}
+            )
+            highlight_style_kwargs.update(
+                {"marker": "*"}
             )
         else:
             color_palette = sns.color_palette()
@@ -315,10 +327,14 @@ def plot_scaling_predictions(
             test_style_kwargs.update(
                 {"color": color_palette[3]}
             )
+            highlight_style_kwargs.update(
+                {"color": color_palette[2]}
+            )
         
         if default_style_kwargs is not None:
             train_style_kwargs.update(default_style_kwargs)
             test_style_kwargs.update(default_style_kwargs)
+            highlight_style_kwargs.update(default_style_kwargs)
         
         ### Plot train / test data points
         train_df[plot_x_name] = all_df[plot_x_name].loc[train_df.index]
@@ -329,7 +345,14 @@ def plot_scaling_predictions(
             if test_df is not None and plot_test_scatter:
                 test_df.loc[:, plot_x_name] = all_df[plot_x_name].loc[test_df.index]
                 test_df.loc[:, plot_y_name] = all_df[plot_y_name].loc[test_df.index]
-                sns.scatterplot(data=test_df, x=plot_x_name, y=plot_y_name, ax=ax, **test_style_kwargs)
+                
+                if highlight_filter is not None:
+                    test_df_plot = test_df[~highlight_filter(test_df)]
+                    highlight_df_plot = test_df[highlight_filter(test_df)]
+                    sns.scatterplot(data=highlight_df_plot, x=plot_x_name, y=plot_y_name, ax=ax, **highlight_style_kwargs)
+                else:
+                    test_df_plot = test_df
+                sns.scatterplot(data=test_df_plot, x=plot_x_name, y=plot_y_name, ax=ax, **test_style_kwargs)
         else:
             ax = plt.gca()
 
@@ -420,9 +443,11 @@ def plot_scaling_predictions(
             if stylize_by_hue:
                 train_marker = plt.Line2D([], [], color='black', linestyle='None', markersize=10, label='Train', marker=train_style_kwargs["marker"])
                 test_marker = plt.Line2D([], [], color='black', linestyle='None', markersize=10, label='Test',marker=test_style_kwargs["marker"])
+                highlight_marker = plt.Line2D([], [], color='black', linestyle='None', markersize=10, label=highlight_marker_name, marker=highlight_style_kwargs["marker"])
             else:
                 train_marker = plt.Line2D([], [], marker='s', linestyle='None', markersize=10, label='Train', color=train_style_kwargs["color"])
                 test_marker = plt.Line2D([], [], marker='s', linestyle='None', markersize=10, label='Test', color=test_style_kwargs["color"])
+                highlight_marker = plt.Line2D([], [], marker='s', linestyle='None', markersize=10, label=highlight_marker_name, color=highlight_style_kwargs["color"])
 
             # Create custom markers for "train" and "test" using the existing colors
             filtered_labels = ["Train"]
@@ -431,6 +456,10 @@ def plot_scaling_predictions(
             if test_df is not None and plot_test_scatter:
                 filtered_labels.append("Test")
                 filtered_handles.append(test_marker)
+
+                if highlight_marker_name is not None:
+                    filtered_labels.append(highlight_marker_name)
+                    filtered_handles.append(highlight_marker)
 
             unique_family = list(sorted(set(train_family + test_family), key=(EVAL_BASE_MODEL_FAMILIES + EVAL_INSTRUCT_MODEL_FAMILIES).index))
             for family in unique_family:

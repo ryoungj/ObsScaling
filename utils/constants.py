@@ -1,15 +1,19 @@
 ######### Base Pretraining Model Family #########
-## Model familieshave  that we evaled
+## Model families that we have evaled
 EVAL_BASE_MODEL_FAMILY_MAP = {
     'meta-llama/Llama-2': "Llama-2",
     'huggyllama/llama-': "Llama",
     "meta-llama/Meta-Llama-3": "Llama-3",
+    "meta-llama/Meta-Llama-3.1": "Llama-3.1",
+    'Qwen/Qwen2': "Qwen2",
     'Qwen/Qwen1.5': "Qwen1.5",
     'Qwen/Qwen-': "Qwen",
     "mistralai/Mistral": "Mistral",
     "mistralai/Mixtral": "Mixtral",
     r'01-ai/Yi-\d+B$': "Yi",
-    "google/gemma": "Gemma",
+    r'01-ai/Yi-1.5-\d+B$': "Yi-1.5",
+    "google/gemma-\d+b": "Gemma",
+    "google/gemma-2": "Gemma-2",
     'tiiuae/falcon': "Falcon",
     "microsoft/phi": "Phi",
     'EleutherAI/pythia': "Pythia",
@@ -21,7 +25,10 @@ EVAL_BASE_MODEL_FAMILY_MAP = {
     'codellama/CodeLlama': "CodeLlama",
     'bigcode/starcoderbase': "StarCoder",
     "bigcode/starcoder2": "StarCoder2",
-    "deepseek-ai/deepseek-coder": "DeepSeek-Coder",
+    "deepseek-ai/deepseek-coder-": "DeepSeek-Coder",
+    "deepseek-ai/DeepSeek-V2": "DeepSeek-V2",
+    "deepseek-ai/DeepSeek-Coder-V2": "DeepSeek-Coder-V2",
+    "ai21labs/Jamba": "Jamba",
 }
 
 EVAL_BASE_MODEL_FAMILIES = list(EVAL_BASE_MODEL_FAMILY_MAP.values())
@@ -41,8 +48,42 @@ MISC_BASE_MODEL_FAMILY_MAP = {
     "togethercomputer/RedPajama-INCITE-Base": "RedPajama-INCITE-Base",
     "LLM360/Amber": "Amber",
     "Salesforce/codegen": "Codegen",
+    "HuggingFaceTB/SmolLM": "SmolLM",
+    "cerebras/Cerebras-GPT": "Cerebras-GPT",
+    "cerebras/btlm-": "BTLM",
+    "openai-community/gpt2": "GPT-2",
+    "h2oai/h2o-danube": "H2O-Danube",
+    "deepseek-ai/deepseek-llm": "DeepSeek-LLM",
+    "allenai/OLMo": "OLMo",
+    "TinyLlama/TinyLlama_v1.1": "TinyLlama",
 }
 MISC_BASE_MODEL_FAMILIES = list(MISC_BASE_MODEL_FAMILY_MAP.values())
+
+
+# Models that are released after our paper (May 2024), and we pre-registered in advance and evaled after their release
+PREREGISTERED_BASE_MODEL_MAP = {
+    "meta-llama/Meta-Llama-3.1-405B-FP8": "Llama-3.1-405B-FP8",
+    "meta-llama/Meta-Llama-3.1-70B": "Llama-3.1",
+    "meta-llama/Meta-Llama-3.1-8B": "Llama-3.1",
+    "Qwen/Qwen1.5-110B": "Qwen1.5-110B",
+    "Qwen/Qwen2-72B": "Qwen2-72B",
+    "Qwen/Qwen2-57B-A14B": "Qwen2",
+    "Qwen/Qwen2-7B": "Qwen2",
+    "Qwen/Qwen2-1.5B": "Qwen2",
+    "Qwen/Qwen2-0.5B": "Qwen2",
+    "deepseek-ai/DeepSeek-V2": "DeepSeek-V2",
+    "deepseek-ai/DeepSeek-Coder-V2-Base": "DeepSeek-Coder-V2-Base",
+    "google/gemma-2-27b": "Gemma-2",
+    "google/gemma-2-9b": "Gemma-2",
+    "google/gemma-2-2b": "Gemma-2",
+    "mistralai/Mixtral-8x22B-v0.1": "Mixtral-8x22B",
+    "mistralai/Mistral-Nemo-Base-2407": "Mistral-Nemo",
+    "01-ai/Yi-1.5-34B": "Yi-1.5"    ,
+    "01-ai/Yi-1.5-9B": "Yi-1.5",
+    "01-ai/Yi-1.5-6B": "Yi-1.5",
+    "ai21labs/Jamba-v0.1": "Jamba",
+}
+PREREGISTERED_BASE_MODELS = list(PREREGISTERED_BASE_MODEL_MAP.keys())
 
 ## All model families that we have collected metadata
 ALL_BASE_MODEL_FAMILIES = EVAL_BASE_MODEL_FAMILIES + MISC_BASE_MODEL_FAMILIES
@@ -52,6 +93,7 @@ ALL_BASE_MODEL_FAMILY_MAP = {**EVAL_BASE_MODEL_FAMILY_MAP, **MISC_BASE_MODEL_FAM
 EVAL_BASE_MODEL_WITH_FLOPS_FAMILIES = EVAL_BASE_MODEL_FAMILIES.copy()
 EVAL_BASE_MODEL_WITH_FLOPS_FAMILIES.remove("Mistral")
 EVAL_BASE_MODEL_WITH_FLOPS_FAMILIES.remove("Mixtral")
+EVAL_BASE_MODEL_WITH_FLOPS_FAMILIES.remove("Qwen2")
 
 ### Code Models ####
 BASE_CODE_MODELS = [ALL_BASE_MODEL_FAMILY_MAP[k] for k in [
@@ -59,7 +101,8 @@ BASE_CODE_MODELS = [ALL_BASE_MODEL_FAMILY_MAP[k] for k in [
     'codellama/CodeLlama',
     "Salesforce/codegen",
     "bigcode/starcoder2",
-    "deepseek-ai/deepseek-coder",
+    "deepseek-ai/deepseek-coder-",
+    "deepseek-ai/DeepSeek-Coder-V2",
 ]]
 
 def remove_code_models(model_list):

@@ -6,13 +6,18 @@ BASE_LLM_EVAL_SAVE_CSV_PATH = "./eval_results/base_llm_benchmark_eval.csv"
 INSTRUCT_LLM_EVAL_SAVE_CSV_PATH = "./eval_results/instruct_llm_benchmark_eval.csv"
 
 def load_base_llm_benchmark_eval(
-    only_eval_model_family: bool = True
+    only_eval_model_family: bool = True,
+    load_preregistered_models: bool = False,
 ):
     base_llm_eval = pd.read_csv(BASE_LLM_EVAL_SAVE_CSV_PATH)
     
     if only_eval_model_family:
         # only keep the models that we have evaled
         base_llm_eval = base_llm_eval[base_llm_eval["Model Family"].isin(EVAL_BASE_MODEL_FAMILIES)]
+
+    if not load_preregistered_models:
+        # only keep the models that are not pre-registered
+        base_llm_eval = base_llm_eval[~base_llm_eval["Model"].isin(PREREGISTERED_BASE_MODELS)]
 
     return base_llm_eval
 
